@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canım Anneme Özel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #f5d9e3, #fbe9f1, #f5d9e3);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            cursor: default;
+        }
+        
+        .container {
+            position: relative;
+            perspective: 1500px;
+            width: 300px;
+            height: 375px;
+        }
+        
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            transition: transform 0.8s ease;
+        }
+        
+        .envelope.open {
+            transform: rotateX(7deg);
+        }
+        
+        .envelope-body {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff8a9e, #ff6b8b);
+            border-radius: 5px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        
+        .envelope-flap {
+            position: absolute;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(135deg, #ff6b8b, #ff4d73);
+            top: 0;
+            transform-origin: bottom;
+            transition: transform 1s ease;
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            z-index: 3;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg);
+            z-index: 0;
+        }
+        
+        .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #ff6b8b, #ff4d73);
+            z-index: 0;
+            border-radius: 5px;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .letter-content {
+            position: absolute;
+            width: 90%;
+            height: 90%;
+            background: #fff;
+            border-radius: 3px;
+            padding: 20px;
+            text-align: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateY(20px);
+            opacity: 0;
+            transition: all 1s ease;
+            z-index: 2;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+        
+        .envelope.open .letter-content {
+            transform: translate(-50%, -80%) translateY(0);
+            opacity: 1;
+        }
+        
+        .message {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.5;
+            margin-top: 20px;
+        }
+        
+        .open-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            z-index: 4;
+            transition: opacity 0.3s ease;
+        }
+        
+        .envelope.open .open-text {
+            opacity: 0;
+        }
+        
+        .hearts {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .heart {
+            position: absolute;
+            background-color: #ff6b8b;
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            opacity: 0;
+            animation: floating 4s ease-in infinite;
+        }
+        
+        .heart:before,
+        .heart:after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            background-color: #ff6b8b;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .heart:before {
+            top: -10px;
+        }
+        
+        .heart:after {
+            left: 10px;
+        }
+        
+        .envelope-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+        
+        .envelope-line {
+            position: absolute;
+            width: 90%;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            top: 50%;
+            left: 5%;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+        }
+        
+        .stamp {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.9);
+            top: 20px;
+            right: 20px;
+            border-radius: 3px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .stamp:before {
+            content: "♥";
+            font-size: 30px;
+            color: #ff4d73;
+        }
+        
+        .stamp:after {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 70%, transparent 65%, rgba(0, 0, 0, 0.1) 70%);
+        }
+        
+        .seal {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #ff4d73;
+            border-radius: 50%;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .seal:before {
+            content: "♡";
+            color: white;
+            font-size: 20px;
+        }
+        
+        .wax-splash {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #ff4d73 60%, transparent 70%);
+            border-radius: 50%;
+            transform: scale(0.9);
+            opacity: 0.7;
+            box-shadow: 0 0 10px rgba(255, 77, 115, 0.5);
+        }
+        
+        .letter-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff4d73;
+            margin-bottom: 20px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .letter-footer {
+            margin-top: 30px;
+            font-style: italic;
+            color: #888;
+        }
+        
+        .letter-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+        
+        .letter-decoration:before,
+        .letter-decoration:after {
+            content: "♥";
+            position: absolute;
+            color: rgba(255, 77, 115, 0.1);
+            font-size: 100px;
+        }
+        
+        .letter-decoration:before {
+            top: -20px;
+            left: -20px;
+            transform: rotate(-20deg);
+        }
+        
+        .letter-decoration:after {
+            bottom: -20px;
+            right: -20px;
+            transform: rotate(20deg);
+        }
+        
+        @keyframes floating {
+            0% {
+                transform: translateY(0) rotate(45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(45deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                width: 280px;
+                height: 350px;
+            }
+            
+            .message {
+                font-size: 16px;
+            }
+            
+            .letter-header {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope">
+            <div class="envelope-body"></div>
+            <div class="envelope-flap"></div>
+            <div class="envelope-back"></div>
+            <div class="envelope-decoration">
+                <div class="envelope-line"></div>
+                <div class="stamp"></div>
+                <div class="seal"></div>
+            </div>
+            <div class="open-text">Beni Aç</div>
+            <div class="letter-content">
+                <div class="letter-decoration"></div>
+                <div class="letter-header">Canım Anneciğim</div>
+                <div class="message">
+                    Hayatımdaki en değerli insan, bana hayat veren, sevgisiyle büyüten canım annem. Senin gibi bir annem olduğu için kendimi dünyanın en şanslı insanı sayıyorum.
+                    <br><br>
+                    Her zaman yanımda oldun, beni destekledin, yol gösterdin. Senin sevgin ve fedakarlığın olmasaydı bugün olduğum kişi olamazdım.
+                    <br><br>
+                    Bu özel günde sana olan tüm sevgimi ve minnettarlığımı ifade etmek istiyorum. Senin gibi bir anneye sahip olduğum için çok şanslıyım.
+                    <br><br>
+                    Anneler Günün Kutlu Olsun!
+                </div>
+                <div class="letter-footer">Seni çok seviyorum ❤️</div>
+            </div>
+        </div>
+        <div class="hearts"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const envelope = document.querySelector('.envelope');
+            const openText = document.querySelector('.open-text');
+            const heartsContainer = document.querySelector('.hearts');
+            
+            // Zarfın açılması için hem tıklama hem de dokunma olaylarını ekleme
+            envelope.addEventListener('click', openEnvelope);
+            envelope.addEventListener('touchstart', function(e) {
+                e.preventDefault(); // Varsayılan dokunma davranışını engelleme
+                openEnvelope();
+            });
+            
+            // Zarf açma fonksiyonu
+            function openEnvelope() {
+                if (!envelope.classList.contains('open')) {
+                    envelope.classList.add('open');
+                    
+                    // Kalpler oluşturma
+                    createHearts();
+                }
+            }
+            
+            // Kalpler oluşturma
+            function createHearts() {
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const heart = document.createElement('div');
+                        heart.classList.add('heart');
+                        
+                        // Rastgele konum ve boyut
+                        const size = Math.random() * 15 + 10;
+                        heart.style.width = `${size}px`;
+                        heart.style.height = `${size}px`;
+                        
+                        heart.style.left = `${Math.random() * 100}%`;
+                        heart.style.bottom = '-20px';
+                        
+                        // Rastgele animasyon süresi ve gecikme
+                        const duration = Math.random() * 3 + 3;
+                        const delay = Math.random() * 2;
+                        
+                        heart.style.animation = `floating ${duration}s ease-in ${delay}s infinite`;
+                        
+                        // Rastgele renk tonu
+                        const hue = 340 + Math.random() * 30; // Pembe-kırmızı arası
+                        heart.style.backgroundColor = `hsl(${hue}, 100%, 65%)`;
+                        heart.style.setProperty('--heart-color', `hsl(${hue}, 100%, 65%)`);
+                        
+                        // Arka ve ön kalp şekillerini aynı renk yap
+                        heart.innerHTML = `
+                            <style>
+                                .heart:before, .heart:after {
+                                    background-color: hsl(${hue}, 100%, 65%);
+                                }
+                            </style>
+                        `;
+                        
+                        heartsContainer.appendChild(heart);
+                        
+                        // Belirli bir süre sonra kaldırma
+                        setTimeout(() => {
+                            heart.remove();
+                        }, (duration + delay) * 1000);
+                    }, i * 200);
+                }
+            }
+            
+            // Etkileşimli zarfı gösterme efekti
+            setTimeout(() => {
+                envelope.style.transition = "transform 1s ease";
+                envelope.style.transform = "rotateY(15deg)";
+                
+                setTimeout(() => {
+                    envelope.style.transform = "rotateY(-15deg)";
+                    
+                    setTimeout(() => {
+                        envelope.style.transform = "rotateY(0)";
+                    }, 500);
+                }, 500);
+            }, 1000);
+            
+            // Wax mühür efekti
+            const seal = document.querySelector('.seal');
+            const createWaxSplash = () => {
+                const splash = document.createElement('div');
+                splash.classList.add('wax-splash');
+                
+                const randomAngle = Math.random() * 360;
+                const randomDistance = Math.random() * 8 + 2;
+                
+                splash.style.top = `${randomDistance * Math.sin(randomAngle * Math.PI / 180)}px`;
+                splash.style.left = `${randomDistance * Math.cos(randomAngle * Math.PI / 180)}px`;
+                
+                seal.appendChild(splash);
+                
+                setTimeout(() => {
+                    splash.remove();
+                }, 5000);
+            };
+            
+            // Wax splashes ekle
+            for (let i = 0; i < 5; i++) {
+                createWaxSplash();
+            }
+        });
+    </script>
+</body>
+</html>
