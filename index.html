@@ -2,8 +2,8 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canım Anneme Özel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Anneler Günü Özel Kartı</title>
     <style>
         * {
             margin: 0;
@@ -16,17 +16,17 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(45deg, #f5d9e3, #fbe9f1, #f5d9e3);
+            background: linear-gradient(135deg, #f8e1eb, #fbedf3, #f5d9e3);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
-            cursor: default;
         }
         
         .container {
             position: relative;
+            width: 320px;
+            height: 400px;
             perspective: 1500px;
-            width: 300px;
-            height: 375px;
+            margin-top: 20px;
         }
         
         .envelope {
@@ -35,31 +35,28 @@
             height: 100%;
             transform-style: preserve-3d;
             cursor: pointer;
-            transition: transform 0.8s ease;
-        }
-        
-        .envelope.open {
-            transform: rotateX(7deg);
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         
         .envelope-body {
             position: absolute;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #ff8a9e, #ff6b8b);
-            border-radius: 5px;
+            background: linear-gradient(145deg, #ff8a9e, #ff6b8b);
+            border-radius: 8px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             z-index: 1;
+            transition: all 0.5s ease;
         }
         
         .envelope-flap {
             position: absolute;
             width: 100%;
             height: 50%;
-            background: linear-gradient(135deg, #ff6b8b, #ff4d73);
+            background: linear-gradient(145deg, #ff6b8b, #ff4d73);
             top: 0;
             transform-origin: bottom;
-            transition: transform 1s ease;
+            transition: transform 1s cubic-bezier(0.26, 0.83, 0.3, 0.96);
             clip-path: polygon(0 0, 100% 0, 50% 100%);
             z-index: 3;
             box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
@@ -74,42 +71,44 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            top: 0;
-            left: 0;
-            background: linear-gradient(135deg, #ff6b8b, #ff4d73);
+            background: linear-gradient(145deg, #ff6b8b, #ff4d73);
             z-index: 0;
-            border-radius: 5px;
+            border-radius: 8px;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.1);
         }
         
         .letter-content {
             position: absolute;
-            width: 90%;
-            height: 90%;
+            width: 85%;
+            height: 85%;
             background: #fff;
-            border-radius: 3px;
-            padding: 20px;
+            border-radius: 5px;
+            padding: 25px 20px;
             text-align: center;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%) translateY(20px);
             opacity: 0;
-            transition: all 1s ease;
+            transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 2;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* iOS için kaydırmayı akıcı hale getirir */
+            max-height: 75vh;
+            pointer-events: none;
         }
         
         .envelope.open .letter-content {
-            transform: translate(-50%, -80%) translateY(0);
+            transform: translate(-50%, -50%) translateY(0);
             opacity: 1;
+            pointer-events: auto;
         }
         
         .message {
             font-size: 18px;
             color: #333;
-            line-height: 1.5;
-            margin-top: 20px;
+            line-height: 1.6;
+            margin-top: 25px;
         }
         
         .open-text {
@@ -117,16 +116,17 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 20px;
+            font-size: 24px;
             font-weight: bold;
             color: #fff;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
             z-index: 4;
             transition: opacity 0.3s ease;
         }
         
         .envelope.open .open-text {
             opacity: 0;
+            pointer-events: none;
         }
         
         .hearts {
@@ -139,11 +139,11 @@
         
         .heart {
             position: absolute;
-            background-color: #ff6b8b;
             display: inline-block;
             width: 20px;
             height: 20px;
             opacity: 0;
+            transform: rotate(45deg);
             animation: floating 4s ease-in infinite;
         }
         
@@ -152,17 +152,18 @@
             content: "";
             width: 20px;
             height: 20px;
-            background-color: #ff6b8b;
             border-radius: 50%;
             position: absolute;
         }
         
         .heart:before {
             top: -10px;
+            left: 0;
         }
         
         .heart:after {
-            left: 10px;
+            top: 0;
+            left: -10px;
         }
         
         .envelope-decoration {
@@ -176,7 +177,7 @@
         .envelope-line {
             position: absolute;
             width: 90%;
-            height: 2px;
+            height: 1px;
             background: rgba(255, 255, 255, 0.5);
             top: 50%;
             left: 5%;
@@ -185,12 +186,12 @@
         
         .stamp {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 65px;
             background: rgba(255, 255, 255, 0.9);
-            top: 20px;
-            right: 20px;
-            border-radius: 3px;
+            top: 15px;
+            right: 15px;
+            border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -200,7 +201,7 @@
         
         .stamp:before {
             content: "♥";
-            font-size: 30px;
+            font-size: 32px;
             color: #ff4d73;
         }
         
@@ -214,11 +215,11 @@
         
         .seal {
             position: absolute;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: #ff4d73;
             border-radius: 50%;
-            bottom: 15%;
+            bottom: 20%;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
@@ -230,7 +231,7 @@
         .seal:before {
             content: "♡";
             color: white;
-            font-size: 20px;
+            font-size: 24px;
         }
         
         .wax-splash {
@@ -245,7 +246,7 @@
         }
         
         .letter-header {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             color: #ff4d73;
             margin-bottom: 20px;
@@ -256,6 +257,7 @@
             margin-top: 30px;
             font-style: italic;
             color: #888;
+            padding-bottom: 15px;
         }
         
         .letter-decoration {
@@ -298,6 +300,29 @@
             }
         }
         
+        /* Kalp renkleri */
+        .heart1 {
+            background-color: #ff4d73;
+        }
+        .heart1:before, .heart1:after {
+            background-color: #ff4d73;
+        }
+        
+        .heart2 {
+            background-color: #ff758c;
+        }
+        .heart2:before, .heart2:after {
+            background-color: #ff758c;
+        }
+        
+        .heart3 {
+            background-color: #ff8fa3;
+        }
+        .heart3:before, .heart3:after {
+            background-color: #ff8fa3;
+        }
+        
+        /* Mobil için düzenlemeler */
         @media (max-width: 600px) {
             .container {
                 width: 280px;
@@ -309,6 +334,15 @@
             }
             
             .letter-header {
+                font-size: 22px;
+            }
+            
+            .letter-content {
+                max-height: 65vh;
+                padding: 15px;
+            }
+            
+            .open-text {
                 font-size: 22px;
             }
         }
@@ -349,30 +383,51 @@
             const envelope = document.querySelector('.envelope');
             const openText = document.querySelector('.open-text');
             const heartsContainer = document.querySelector('.hearts');
+            const letterContent = document.querySelector('.letter-content');
             
-            // Zarfın açılması için hem tıklama hem de dokunma olaylarını ekleme
-            envelope.addEventListener('click', openEnvelope);
-            envelope.addEventListener('touchstart', function(e) {
-                e.preventDefault(); // Varsayılan dokunma davranışını engelleme
-                openEnvelope();
-            });
-            
-            // Zarf açma fonksiyonu
+            // Zarfı aç fonksiyonu
             function openEnvelope() {
+                // Zaten açık değilse aç
                 if (!envelope.classList.contains('open')) {
                     envelope.classList.add('open');
-                    
-                    // Kalpler oluşturma
                     createHearts();
                 }
             }
             
-            // Kalpler oluşturma
+            // Fare tıklaması için olay dinleyici
+            envelope.addEventListener('click', function(e) {
+                // Eğer içerik üzerinde tıklanmışsa ve zarf açıksa, kaydırmaya izin ver
+                if (envelope.classList.contains('open') && e.target.closest('.letter-content')) {
+                    return;
+                }
+                openEnvelope();
+            });
+            
+            // Dokunmatik ekran için olay dinleyici
+            envelope.addEventListener('touchstart', function(e) {
+                // Eğer içerik üzerinde dokunulmuşsa ve zarf açıksa, kaydırmaya izin ver
+                if (envelope.classList.contains('open') && e.target.closest('.letter-content')) {
+                    return;
+                }
+                openEnvelope();
+            });
+            
+            // Kalpler oluşturma fonksiyonu
             function createHearts() {
-                for (let i = 0; i < 15; i++) {
+                // Önceden eklenmiş tüm kalpleri temizle
+                while (heartsContainer.firstChild) {
+                    heartsContainer.removeChild(heartsContainer.firstChild);
+                }
+                
+                // Yeni kalpler ekle
+                for (let i = 0; i < 20; i++) {
                     setTimeout(() => {
                         const heart = document.createElement('div');
                         heart.classList.add('heart');
+                        
+                        // Rastgele kalp sınıfı ekle (farklı renkler için)
+                        const heartClass = 'heart' + (Math.floor(Math.random() * 3) + 1);
+                        heart.classList.add(heartClass);
                         
                         // Rastgele konum ve boyut
                         const size = Math.random() * 15 + 10;
@@ -386,21 +441,7 @@
                         const duration = Math.random() * 3 + 3;
                         const delay = Math.random() * 2;
                         
-                        heart.style.animation = `floating ${duration}s ease-in ${delay}s infinite`;
-                        
-                        // Rastgele renk tonu
-                        const hue = 340 + Math.random() * 30; // Pembe-kırmızı arası
-                        heart.style.backgroundColor = `hsl(${hue}, 100%, 65%)`;
-                        heart.style.setProperty('--heart-color', `hsl(${hue}, 100%, 65%)`);
-                        
-                        // Arka ve ön kalp şekillerini aynı renk yap
-                        heart.innerHTML = `
-                            <style>
-                                .heart:before, .heart:after {
-                                    background-color: hsl(${hue}, 100%, 65%);
-                                }
-                            </style>
-                        `;
+                        heart.style.animation = `floating ${duration}s ease-in ${delay}s 1`;
                         
                         heartsContainer.appendChild(heart);
                         
@@ -408,47 +449,52 @@
                         setTimeout(() => {
                             heart.remove();
                         }, (duration + delay) * 1000);
-                    }, i * 200);
+                    }, i * 150);
                 }
             }
             
-            // Etkileşimli zarfı gösterme efekti
+            // Wax mühür efekti
+            function createWaxSplashes() {
+                const seal = document.querySelector('.seal');
+                if (!seal) return;
+                
+                for (let i = 0; i < 5; i++) {
+                    const splash = document.createElement('div');
+                    splash.classList.add('wax-splash');
+                    
+                    const randomAngle = Math.random() * 360;
+                    const randomDistance = Math.random() * 8 + 2;
+                    
+                    splash.style.top = `${randomDistance * Math.sin(randomAngle * Math.PI / 180)}px`;
+                    splash.style.left = `${randomDistance * Math.cos(randomAngle * Math.PI / 180)}px`;
+                    
+                    seal.appendChild(splash);
+                }
+            }
+            
+            // Wax splashes oluştur
+            createWaxSplashes();
+            
+            // Mobil cihazlarda içeriği kaydırabilme
+            document.addEventListener('touchmove', function(e) {
+                if (envelope.classList.contains('open') && e.target.closest('.letter-content')) {
+                    // İçerik alanında dokunmatik kaydırmaya izin ver
+                    e.stopPropagation();
+                }
+            }, { passive: true });
+            
+            // Sayfa yüklendiğinde gösterme animasyonu
             setTimeout(() => {
-                envelope.style.transition = "transform 1s ease";
                 envelope.style.transform = "rotateY(15deg)";
                 
                 setTimeout(() => {
-                    envelope.style.transform = "rotateY(-15deg)";
+                    envelope.style.transform = "rotateY(-10deg)";
                     
                     setTimeout(() => {
                         envelope.style.transform = "rotateY(0)";
-                    }, 500);
-                }, 500);
-            }, 1000);
-            
-            // Wax mühür efekti
-            const seal = document.querySelector('.seal');
-            const createWaxSplash = () => {
-                const splash = document.createElement('div');
-                splash.classList.add('wax-splash');
-                
-                const randomAngle = Math.random() * 360;
-                const randomDistance = Math.random() * 8 + 2;
-                
-                splash.style.top = `${randomDistance * Math.sin(randomAngle * Math.PI / 180)}px`;
-                splash.style.left = `${randomDistance * Math.cos(randomAngle * Math.PI / 180)}px`;
-                
-                seal.appendChild(splash);
-                
-                setTimeout(() => {
-                    splash.remove();
-                }, 5000);
-            };
-            
-            // Wax splashes ekle
-            for (let i = 0; i < 5; i++) {
-                createWaxSplash();
-            }
+                    }, 400);
+                }, 400);
+            }, 800);
         });
     </script>
 </body>
